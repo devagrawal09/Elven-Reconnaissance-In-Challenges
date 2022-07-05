@@ -1,11 +1,11 @@
+import path from 'path';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
-import helmet from 'helmet';
 import hpp from 'hpp';
 import { NODE_ENV, PORT, ORIGIN, CREDENTIALS } from '@config';
-import DB from '@databases';
+import { sequelize } from '@databases';
 
 class App {
   public app: express.Application;
@@ -18,11 +18,14 @@ class App {
     this.port = PORT || 3000;
 
     this.connectToDatabase();
+    this.configureApp();
     this.initializeMiddlewares();
+    this.initializeRoutes();
   }
 
   public listen() {
     this.app.listen(this.port);
+    console.log(`Server is running on port http://localhost:${this.port}`);
   }
 
   public getServer() {
@@ -30,17 +33,25 @@ class App {
   }
 
   private connectToDatabase() {
-    DB.sequelize.sync({ force: false });
+    sequelize.sync({ force: false });
+  }
+
+  private configureApp() {
+    this.app.set('view engine', 'ejs');
   }
 
   private initializeMiddlewares() {
     this.app.use(cors({ origin: ORIGIN, credentials: CREDENTIALS }));
     this.app.use(hpp());
-    this.app.use(helmet());
     this.app.use(compression());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
+    this.app.use(`/static`, express.static(path.join(__dirname, '../static')));
+  }
+
+  private initializeRoutes() {
+    this.app.use('/', require('./routes/index.route').router);
   }
 }
 
