@@ -4,12 +4,17 @@ import { GroupId, GroupModel } from '@/models/group.model';
 import { ChallengeId, ChallengeModel } from '@/models/challenge.model';
 import { GroupLangModel } from '@/models/group-lang.model';
 import { sequelize } from '@/databases';
+import { SearchParamsDto } from '@/dtos/search.dto';
 
 export const router = Router();
 
 router.get(`/`, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const query = req.query;
+
+    const search = new SearchParamsDto();
+    Object.assign(search, query);
+    console.log({ query, search });
 
     const cs = await ChallengeModel.findAll({
       include: [
@@ -29,9 +34,7 @@ router.get(`/`, async (req: Request, res: Response, next: NextFunction) => {
       })),
     );
 
-    console.log({ query });
-
-    res.render('index', { title: 'Express', data });
+    res.render('index', { title: 'Express', data, query });
   } catch (error) {
     next(error);
   }
