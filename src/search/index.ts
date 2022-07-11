@@ -15,8 +15,6 @@ export const SearchParamsToSequelizeQuery = (params: SearchParams): WhereOptions
     guildLangSearch(params),
   ].reduce((acc, curr) => ({ ...acc, ...curr }), {});
 
-  console.log({ params, options });
-
   return options;
 };
 
