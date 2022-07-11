@@ -8,7 +8,6 @@ export const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWO
   dialect: 'mysql',
   host: DB_HOST,
   port: parseInt(DB_PORT),
-  timezone: '+09:00',
   define: {
     charset: 'utf8mb4',
     collate: 'utf8mb4_general_ci',
@@ -19,7 +18,7 @@ export const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWO
     min: 0,
     max: 5,
   },
-  logging: NODE_ENV === 'development',
+  logging: NODE_ENV === 'developmentt',
   benchmark: true,
 });
 

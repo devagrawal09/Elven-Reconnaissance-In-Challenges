@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import path from 'path';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';

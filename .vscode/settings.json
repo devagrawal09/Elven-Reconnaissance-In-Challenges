@@ -1,10 +1,10 @@
 {
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": true,
   },
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   "cSpell.words": [
     "Middlewares"
   ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
 }

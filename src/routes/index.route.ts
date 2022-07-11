@@ -1,40 +1,41 @@
 import { NextFunction, Router, Request, Response } from 'express';
+import { validate } from 'class-validator';
+import { plainToClass } from 'class-transformer';
 import { DummyData } from '../data/dummy';
 import { GroupId, GroupModel } from '@/models/group.model';
 import { ChallengeId, ChallengeModel } from '@/models/challenge.model';
 import { GroupLangModel } from '@/models/group-lang.model';
 import { sequelize } from '@/databases';
-import { SearchParamsDto } from '@/dtos/search.dto';
+import { SearchConfig, SearchParams } from '@/dtos';
+import { SearchParamsToSequelizeQuery } from '@/search';
 
 export const router = Router();
 
 router.get(`/`, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const query = req.query;
+    const query = plainToClass(SearchParams, req.query);
+    const validationErrors = await validate(query);
 
-    const search = new SearchParamsDto();
-    Object.assign(search, query);
-    console.log({ query, search });
+    if (validationErrors.length > 0) {
+      validationErrors.forEach(error =>
+        Object.values(error.constraints).forEach(e => console.error(`\t${e}`)),
+      );
+      throw new Error('Validation error');
+    }
 
-    const cs = await ChallengeModel.findAll({
-      include: [
-        {
-          association: 'group',
-          include: [`langs`],
-        },
-      ],
-    });
+    const cs = await ChallengeModel.findAll(SearchParamsToSequelizeQuery(query));
 
-    const challenges = cs.map(c => c.get({ plain: true }));
+    const challenges = cs.map(c => c.get());
 
     const data = JSON.stringify(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       challenges.map(({ description, ...c }) => ({
         ...c,
         summary: `${c.summary.substring(0, 100)}...`,
       })),
     );
 
-    res.render('index', { title: 'Express', data, query });
+    res.render('index', { title: 'Express', data, query, config: SearchConfig });
   } catch (error) {
     next(error);
   }
