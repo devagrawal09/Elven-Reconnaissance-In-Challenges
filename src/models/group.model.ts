@@ -18,10 +18,10 @@ export class GroupModel extends Model<IGroup> {
   async saveGroup(transaction?: Transaction) {
     await this.save({ transaction });
     await Promise.all(
-      this.getDataValue('langs').map(l => {
+      this.getDataValue('langs')?.map(l => {
         l.setDataValue('groupId', this.getDataValue('id'));
         return l.save({ transaction });
-      }),
+      }) ?? [],
     );
   }
 }

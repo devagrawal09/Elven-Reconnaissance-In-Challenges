@@ -113,11 +113,17 @@ function guildClassOptions() {
     const selectedSubclass = ericQuery['guild-subclass'];
 
     guildSubclassSelect.empty();
-    subclassOpts.forEach(opt => {
-      guildSubclassSelect.append(`
+    if (subclassOpts) {
+      subclassOpts.forEach(opt => {
+        guildSubclassSelect.append(`
         <option value="${opt}" ${selectedSubclass === opt ? 'selected' : ''}> ${opt} </option>
       `);
-    });
+      });
+    } else {
+      guildSubclassSelect.append(`
+        <option selected disabled>Sub Classification (select classification first)</option>
+      `);
+    }
   }
 }
 

@@ -17,13 +17,23 @@ router.get(`/`, async (req: Request, res: Response, next: NextFunction) => {
     const validationErrors = await validate(query);
 
     if (validationErrors.length > 0) {
-      validationErrors.forEach(error =>
-        Object.values(error.constraints).forEach(e => console.error(`\t${e}`)),
+      validationErrors.forEach(
+        error =>
+          error.constraints &&
+          Object.values(error.constraints).forEach(e => console.error(`\t${e}`)),
       );
       throw new Error('Validation error');
     }
 
-    const cs = await ChallengeModel.findAll(SearchParamsToSequelizeQuery(query));
+    const cs = await ChallengeModel.findAll({
+      include: [
+        {
+          association: 'group',
+          include: [`langs`],
+        },
+      ],
+      where: SearchParamsToSequelizeQuery(query),
+    });
 
     const challenges = cs.map(c => c.get());
 

@@ -20,6 +20,7 @@
     "resolveJsonModule": true,
     "importHelpers": true,
     "baseUrl": "src",
+    "strict": true,
     "paths": {
       "@/*": ["*"],
       "@config": ["config"],

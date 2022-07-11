@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsOptional, ValidateIf } from 'class-validator';
 import { GuildClasses, GuildSubclasses, Langs, LangTypes, TextSearchTypes } from './enums';
 
 export class SearchParams {
@@ -35,18 +35,18 @@ export class SearchParams {
   'text-search-guild'?: string;
 
   @IsEnum(GuildClasses)
-  @IsOptional()
+  @ValidateIf(params => !!params['guild-class'])
   'guild-class'?: typeof GuildClasses[number];
 
   @IsEnum(GuildSubclasses)
-  @IsOptional()
+  @ValidateIf(params => !!params['guild-subclass'])
   'guild-subclass'?: typeof GuildSubclasses[number];
 
   @IsEnum(LangTypes)
-  @IsOptional()
+  @ValidateIf(params => !!params['guild-lang-type'])
   'guild-lang-type'?: typeof LangTypes[number];
 
   @IsEnum(Langs)
-  @IsOptional()
+  @ValidateIf(params => !!params['guild-lang'])
   'guild-lang'?: typeof Langs[number];
 }

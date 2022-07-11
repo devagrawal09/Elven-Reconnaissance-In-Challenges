@@ -8,7 +8,7 @@ export interface IGroupLang {
   primary: boolean;
 }
 
-export class GroupLangModel extends Model<IGroupLang> {}
+export class GroupLangModel extends Model<IGroupLang, { lang: string; primary?: boolean }> {}
 
 export default function (sequelize: Sequelize) {
   GroupLangModel.init(
