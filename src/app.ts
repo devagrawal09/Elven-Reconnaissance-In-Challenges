@@ -26,7 +26,7 @@ class App {
 
   public listen() {
     this.app.listen(this.port);
-    console.log(`Server is running on port http://localhost:${this.port}`);
+    console.log(`Server is running on port ${this.port}`);
   }
 
   public getServer() {

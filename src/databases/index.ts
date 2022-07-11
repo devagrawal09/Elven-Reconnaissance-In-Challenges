@@ -4,6 +4,10 @@ import ChallengeModel from '@/models/challenge.model';
 import GroupModel from '@/models/group.model';
 import GroupLangModel from '@/models/group-lang.model';
 
+if (!DB_DATABASE || !DB_PORT || !DB_HOST || !DB_USER || !DB_PASSWORD) {
+  throw new Error('Database configuration is missing');
+}
+
 export const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
   dialect: 'mysql',
   host: DB_HOST,
