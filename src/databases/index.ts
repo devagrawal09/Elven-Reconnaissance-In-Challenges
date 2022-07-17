@@ -1,14 +1,11 @@
-import Sequelize from 'sequelize';
+import { Sequelize } from 'sequelize';
 import { NODE_ENV, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE } from '@config';
-import ChallengeModel from '@/models/challenge.model';
-import GroupModel from '@/models/group.model';
-import GroupLangModel from '@/models/group-lang.model';
 
 if (!DB_DATABASE || !DB_PORT || !DB_HOST || !DB_USER || !DB_PASSWORD) {
   throw new Error('Database configuration is missing');
 }
 
-export const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
+export const sequelize = new Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
   dialect: 'mysql',
   host: DB_HOST,
   port: parseInt(DB_PORT),
@@ -22,14 +19,10 @@ export const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWO
     min: 0,
     max: 5,
   },
-  logging: NODE_ENV === 'developmentt',
+  logging: NODE_ENV === 'development',
   benchmark: true,
 });
 
 sequelize.authenticate().then(() => {
   console.log('Database connection has been established successfully.');
 });
-
-export const GroupLang = GroupLangModel(sequelize);
-export const Group = GroupModel(sequelize);
-export const Challenge = ChallengeModel(sequelize);

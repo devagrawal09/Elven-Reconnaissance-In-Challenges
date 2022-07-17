@@ -1,4 +1,5 @@
-import { Sequelize, DataTypes, Model } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from '@/databases';
 import { GroupId, GroupModel } from './group.model';
 
 export type ChallengeId = string & { __isGroupId: true };
@@ -27,69 +28,65 @@ export interface IChallenge {
 
 export class ChallengeModel extends Model<IChallenge> {}
 
-export default function (sequelize: Sequelize) {
-  ChallengeModel.init(
-    {
-      id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-      },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      summary: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      description: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      prize: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      official: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-      },
-      memberCount: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      groupId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-      },
-      created: {
-        type: DataTypes.DATE,
-        allowNull: false,
-      },
-      updated: {
-        type: DataTypes.DATE,
-        allowNull: false,
-      },
-      noOwner: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-      },
-      taskCount: {
-        type: DataTypes.JSON,
-        allowNull: false,
-      },
+ChallengeModel.init(
+  {
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
     },
-    {
-      tableName: 'challenges',
-      timestamps: false,
-      sequelize,
+    name: {
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
-  );
+    summary: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    prize: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    official: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    memberCount: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    groupId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    created: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updated: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    noOwner: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    taskCount: {
+      type: DataTypes.JSON,
+      allowNull: false,
+    },
+  },
+  {
+    tableName: 'challenges',
+    timestamps: false,
+    sequelize,
+  },
+);
 
-  ChallengeModel.belongsTo(GroupModel, {
-    foreignKey: 'groupId',
-    as: 'group',
-  });
-
-  return ChallengeModel;
-}
+ChallengeModel.belongsTo(GroupModel, {
+  foreignKey: 'groupId',
+  as: 'group',
+});

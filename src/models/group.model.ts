@@ -1,4 +1,5 @@
-import { Sequelize, DataTypes, Model, Transaction } from 'sequelize';
+import { DataTypes, Model, Transaction } from 'sequelize';
+import { sequelize } from '@/databases';
 import { GroupLangModel } from './group-lang.model';
 
 export type GroupId = string & { __isGroupId: true };
@@ -26,45 +27,41 @@ export class GroupModel extends Model<IGroup> {
   }
 }
 
-export default function (sequelize: Sequelize) {
-  GroupModel.init(
-    {
-      id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-      },
-      name: {
-        type: DataTypes.STRING,
-        // allowNull: false,
-      },
-      langAll: {
-        type: DataTypes.BOOLEAN,
-        // allowNull: false,
-      },
-      classification: {
-        type: DataTypes.STRING,
-      },
-      subclassification: {
-        type: DataTypes.STRING,
-      },
-      memberColor: {
-        type: DataTypes.STRING,
-        // allowNull: false,
-      },
+GroupModel.init(
+  {
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
     },
-    {
-      tableName: 'guilds',
-      timestamps: false,
-      sequelize,
+    name: {
+      type: DataTypes.STRING,
+      // allowNull: false,
     },
-  );
+    langAll: {
+      type: DataTypes.BOOLEAN,
+      // allowNull: false,
+    },
+    classification: {
+      type: DataTypes.STRING,
+    },
+    subclassification: {
+      type: DataTypes.STRING,
+    },
+    memberColor: {
+      type: DataTypes.STRING,
+      // allowNull: false,
+    },
+  },
+  {
+    tableName: 'guilds',
+    timestamps: false,
+    sequelize,
+  },
+);
 
-  GroupModel.hasMany(GroupLangModel, {
-    foreignKey: 'groupId',
-    as: 'langs',
-  });
+GroupModel.hasMany(GroupLangModel, {
+  foreignKey: 'groupId',
+  as: 'langs',
+});
 
-  GroupModel.sync();
-
-  return GroupModel;
-}
+GroupModel.sync();
