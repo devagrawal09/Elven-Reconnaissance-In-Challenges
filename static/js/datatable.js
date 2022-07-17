@@ -1,13 +1,29 @@
-/**
- * @type { import('../../src/models/challenge.model').IChallenge[] }
- */
-const ericData = data;
-
 (function () {
+  /**
+   * @type { import('axios').AxiosInstance }
+   */
+  const ax = axios;
+
+  const loadingText = $('#loading-text');
+
+  ax.get('/data' + window.location.search)
+    .then(res => {
+      loadingText.hide();
+      setupDataTable(res.data);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+})();
+
+/**
+ * @param { import('../../src/models/challenge.model').IChallenge[] } data
+ */
+function setupDataTable(data) {
   const table = $('#eric-results');
 
   table.DataTable({
-    data: ericData,
+    data,
     searching: false,
     columns: [
       { data: 'name', title: 'Name' },
@@ -53,4 +69,4 @@ const ericData = data;
       },
     ],
   });
-})();
+}

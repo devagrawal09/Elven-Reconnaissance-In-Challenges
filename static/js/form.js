@@ -1,9 +1,4 @@
 /**
- * @type {JQueryStatic}
- */
-const $ = jQuery;
-
-/**
  * @type { import('../../src/dtos').SearchConfig }
  */
 const ericConfig = config;

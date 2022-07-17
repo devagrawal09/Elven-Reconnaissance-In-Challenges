@@ -35,11 +35,11 @@ export default function (sequelize: Sequelize) {
       },
       name: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       langAll: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
+        // allowNull: false,
       },
       classification: {
         type: DataTypes.STRING,
@@ -49,11 +49,11 @@ export default function (sequelize: Sequelize) {
       },
       memberColor: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
     },
     {
-      tableName: 'groups',
+      tableName: 'guilds',
       timestamps: false,
       sequelize,
     },
@@ -63,6 +63,8 @@ export default function (sequelize: Sequelize) {
     foreignKey: 'groupId',
     as: 'langs',
   });
+
+  GroupModel.sync();
 
   return GroupModel;
 }

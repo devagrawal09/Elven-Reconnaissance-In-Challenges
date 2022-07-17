@@ -16,6 +16,7 @@
     "deploy:dev": "pm2 start ecosystem.config.js --only dev"
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
@@ -45,6 +46,7 @@
     "@types/compression": "^1.7.1",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.11",
+    "@types/datatables.net": "^1.10.22",
     "@types/express": "^4.17.13",
     "@types/hpp": "^0.2.1",
     "@types/jest": "27.4.x",

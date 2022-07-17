@@ -32,7 +32,7 @@ export default function (sequelize: Sequelize) {
       },
     },
     {
-      tableName: 'group_lang',
+      tableName: 'group_langs',
       timestamps: false,
       sequelize,
     },
