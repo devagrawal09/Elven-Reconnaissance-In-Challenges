@@ -1,289 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ERIC</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
-      crossorigin="anonymous"
-    />
-    <link href="/static/css/table.css" rel="stylesheet" />
-    <script src="https://kit.fontawesome.com/2a5cce350d.js" crossorigin="anonymous"></script>
-  </head>
-  <body class="bg-dark text-light">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">ERIC</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#eric-navbar"
-          aria-controls="eric-navbar"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="eric-navbar">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Search</a>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERIC</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous" />
+  <link href="/static/css/table.css" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/2a5cce350d.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="bg-dark text-light">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">ERIC</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#eric-navbar"
+        aria-controls="eric-navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="eric-navbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Search</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">FAQ</a>
+          </li>
+        </ul>
+      </div>
+      <div class="dropstart">
+        <span class="dropdown-toggle text-dark" href="#" id="langSelect" role="button" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <%= selectedLangPack?.text?.change_language || `change_language` %>
+        </span>
+        <ul class="dropdown-menu" aria-labelledby="langSelect">
+          <% langs.forEach(lang=> { %>
+            <li>
+              <a class="dropdown-item" href="?lang=<%=lang %>">
+                <%= selectedLangPack?.langs?.[lang] || lang %>
+              </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">FAQ</a>
-            </li>
-          </ul>
+            <% }); %>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <main class="container">
+    <form id="eric-form">
+      <div class="row">
+        <div class="col">
+          <h4 class="mt-4">
+            <%= selectedLangPack?.text?.search_params || `search_params` %>
+          </h4>
+        </div>
+        <div class="col" style="text-align: right">
+          <button type="button" class="btn btn-primary mt-4" id="advanced-search-toggle">
+            <span class="on-hidden">
+              <%= selectedLangPack?.text?.advanced_search || `advanced_search` %>
+                <i class="fas fa-caret-down"></i>
+            </span>
+            <span class="on-shown hide"> Simple Search <i class="fas fa-caret-up"></i> </span>
+          </button>
         </div>
       </div>
-    </nav>
-    <main class="container">
-      <form id="eric-form">
-        <div class="row">
-          <div class="col">
-            <h4 class="mt-4">Search Parameters</h4>
+      <div class="form-group mt-3">
+        <div class="input-group">
+          <select name="text-search-type" class="form-select">
+            <option <% if (query['text-search-type']==="title" ) { %> selected <% } %>
+                value="title"
+                ><%= selectedLangPack?.text?.title || `title` %>
+            </option>
+            <option <% if (query['text-search-type']==="summary" ) { %> selected <% } %>
+                value="summary"
+                ><%= selectedLangPack?.text?.title_and_summary || `title_and_summary` %>
+            </option>
+            <option <% if (query['text-search-type']==="all" ) { %> selected <% } %>
+                value="all"
+                ><%= selectedLangPack?.text?.all_three || `all_three` %>
+            </option>
+          </select>
+          <input type="text" class="form-control" name="text-search"
+            placeholder="<%= selectedLangPack?.text?.text_search || `text_search` %>" style="flex-grow: 4"
+            value="<%= query['text-search'] %>" />
+        </div>
+      </div>
+      <div class="collapse" id="advanced-search">
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-text">Created After</span>
+                <input type="date" class="form-control" name="date-created-after"
+                  value="<%= query['date-created-after'] %>" />
+              </div>
+            </div>
           </div>
-          <div class="col" style="text-align: right">
-            <button type="button" class="btn btn-primary mt-4" id="advanced-search-toggle">
-              <span class="on-hidden"> Advanced Search <i class="fas fa-caret-down"></i> </span>
-              <span class="on-shown hide"> Simple Search <i class="fas fa-caret-up"></i> </span>
-            </button>
+          <div class="col-md-6">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-text">Created Before</span>
+                <input type="date" class="form-control" name="date-created-before"
+                  value="<%= query['date-created-before'] %>" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-text">Last Updated After</span>
+                <input type="date" class="form-control" name="date-updated-after" />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-text">Last Updated Before</span>
+                <input type="date" class="form-control" name="date-updated-before" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="min-prize">Minimum Prize</label>
+              <strong id="min-prize-value">
+                <%= query['min-prize'] || config.prizeMin %>
+              </strong>
+              <input type="range" class="form-range" name="min-prize" placeholder="Minimum Prize"
+                step="<%= config.prizeStep %>" min="<%= config.prizeMin %>"
+                max="<%= query['max-prize'] || config.prizeMax %>"
+                value="<%= query['min-prize'] || config.prizeMin %>" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="max-prize">Maximum Prize</label>
+              <strong id="max-prize-value">
+                <%= query['max-prize'] || config.prizeMax %>
+              </strong>
+              <input type="range" class="form-range" name="max-prize" placeholder="Maximum Prize"
+                step="<%= config.prizeStep %>" min="<%= query['min-prize'] || config.prizeMin %>"
+                max="<%= config.prizeMax %>" value="<%= query['max-prize'] || config.prizeMax %>" />
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="min-members">Minimum Members</label>
+              <strong id="min-members-value">
+                <%= query['min-members'] || config.memberMin %>
+              </strong>
+              <input type="range" class="form-range" name="min-members" placeholder="Minimum Members"
+                step="<%= config.membersStep %>" min="<%= config.membersMin %>"
+                max="<%= query['max-members'] || config.membersMax %>"
+                value="<%= query['min-members'] || config.membersMin %>" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="max-members">Maximum Members</label>
+              <strong id="max-members-value">
+                <%= query['max-members'] || config.membersMax %>
+              </strong>
+              <input type="range" class="form-range" name="max-members" placeholder="Maximum Members"
+                step="<%= config.membersStep %>" min="<%= query['min-members'] || config.membersMin %>"
+                max="<%= config.membersMax %>" value="<%= query['max-members'] || config.membersMax %>" />
+            </div>
           </div>
         </div>
         <div class="form-group mt-3">
-          <div class="input-group">
-            <select
-              name="text-search-type"
-              class="form-select"
-            >
-              <option
-                <% if (query['text-search-type'] === "title") { %> selected <% } %>
-                value="title"
-              >Title</option>
-              <option
-                <% if (query['text-search-type'] === "summary") { %> selected <% } %>
-                value="summary"
-              >Title and Summary</option>
-              <option
-                <% if (query['text-search-type'] === "all") { %> selected <% } %>
-                value="all"
-              >Title, Summary, and Description</option>
-            </select>
-            <input
-              type="text"
-              class="form-control"
-              name="text-search"
-              placeholder="Text Search"
-              style="flex-grow: 4"
-              value="<%= query['text-search'] %>"
-            />
-          </div>
-        </div>
-        <div class="collapse" id="advanced-search">
-          <div class="row mt-3">
-            <div class="col-md-6">
-              <div class="form-group">
-                <div class="input-group">
-                  <span class="input-group-text">Created After</span>
-                  <input type="date" class="form-control" name="date-created-after"
-                    value="<%= query['date-created-after'] %>"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <div class="input-group">
-                  <span class="input-group-text">Created Before</span>
-                  <input type="date" class="form-control" name="date-created-before"
-                    value="<%= query['date-created-before'] %>"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-md-6">
-              <div class="form-group">
-                <div class="input-group">
-                  <span class="input-group-text">Last Updated After</span>
-                  <input type="date" class="form-control" name="date-updated-after" />
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <div class="input-group">
-                  <span class="input-group-text">Last Updated Before</span>
-                  <input type="date" class="form-control" name="date-updated-before" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="min-prize">Minimum Prize</label>
-                <strong id="min-prize-value">
-                  <%= query['min-prize'] || config.prizeMin %>
-                </strong>
-                <input
-                  type="range"
-                  class="form-range"
-                  name="min-prize"
-                  placeholder="Minimum Prize"
-                  step="<%= config.prizeStep %>"
-                  min="<%= config.prizeMin %>"
-                  max="<%= query['max-prize'] || config.prizeMax %>"
-                  value="<%= query['min-prize'] || config.prizeMin %>"
-                />
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="max-prize">Maximum Prize</label>
-                <strong id="max-prize-value">
-                  <%= query['max-prize'] || config.prizeMax %>
-                </strong>
-                <input
-                  type="range"
-                  class="form-range"
-                  name="max-prize"
-                  placeholder="Maximum Prize"
-                  step="<%= config.prizeStep %>"
-                  min="<%= query['min-prize'] || config.prizeMin %>"
-                  max="<%= config.prizeMax %>"
-                  value="<%= query['max-prize'] || config.prizeMax %>"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="min-members">Minimum Members</label>
-                <strong id="min-members-value">
-                  <%= query['min-members'] || config.memberMin %>
-                </strong>
-                <input
-                  type="range"
-                  class="form-range"
-                  name="min-members"
-                  placeholder="Minimum Members"
-                  step="<%= config.membersStep %>"
-                  min="<%= config.membersMin %>"
-                  max="<%= query['max-members'] || config.membersMax %>"
-                  value="<%= query['min-members'] || config.membersMin %>"
-                />
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="max-members">Maximum Members</label>
-                <strong id="max-members-value">
-                  <%= query['max-members'] || config.membersMax %>
-                </strong>
-                <input
-                  type="range"
-                  class="form-range"
-                  name="max-members"
-                  placeholder="Maximum Members"
-                  step="<%= config.membersStep %>"
-                  min="<%= query['min-members'] || config.membersMin %>"
-                  max="<%= config.membersMax %>"
-                  value="<%= query['max-members'] || config.membersMax %>"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="form-group mt-3">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="no-owner" id="no-owner"
-                <% if (query['no-owner']) { %> checked <% } %>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="no-owner" id="no-owner" <% if (query['no-owner']) { %>
+            checked <% } %>
               />
               <label class="form-check-label" for="no-owner">
                 Challenge Owner has left Habitica
               </label>
-            </div>
           </div>
-          <h4 class="mt-4">Guild Parameters</h4>
-          <div class="form-group mt-3">
-            <input
-              type="text"
-              class="form-control"
-              name="text-search-guild"
-              placeholder="Guild Search"
-              style="flex-grow: 4"
-              value="<%= query['text-search-guild'] %>"
-            />
-          </div>
-          <div class="row mt-3">
-            <div class="col-md-6">
-              <div class="form-group">
-                <div class="input-group">
-                  <span class="input-group-text">Classification</span>
-                  <select name="guild-class" class="form-select">
-                    <option value="">Classification</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <div class="input-group">
-                  <span class="input-group-text">Sub Classification</span>
-                  <select name="guild-subclass" class="form-select">
-                    <option selected disabled>Sub Classification (select classification first)</option>
-                  </select>
-                </div>
+        </div>
+        <h4 class="mt-4">Guild Parameters</h4>
+        <div class="form-group mt-3">
+          <input type="text" class="form-control" name="text-search-guild" placeholder="Guild Search"
+            style="flex-grow: 4" value="<%= query['text-search-guild'] %>" />
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-text">Classification</span>
+                <select name="guild-class" class="form-select">
+                  <option value="">Classification</option>
+                </select>
               </div>
             </div>
           </div>
-          <div class="form-group mt-3">
-            <div class="input-group">
-              <span class="input-group-text">Language Preference</span>
-              <select name="guild-lang-type" class="form-select">
-                <option value="primary">Primary</option>
-                <option value="both">Primary and Secondary</option>
-              </select>
-              <select name="guild-lang" class="form-select" style="flex-grow: 4">
-                <option selected disabled>Language</option>
-              </select>
+          <div class="col-md-6">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-text">Sub Classification</span>
+                <select name="guild-subclass" class="form-select">
+                  <option selected disabled>Sub Classification (select classification first)</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
-        <div class="d-grid gap-2">
-          <button type="submit" class="btn btn-success mt-3">Search</button>
+        <div class="form-group mt-3">
+          <div class="input-group">
+            <span class="input-group-text">Language Preference</span>
+            <select name="guild-lang-type" class="form-select">
+              <option value="primary">Primary</option>
+              <option value="both">Primary and Secondary</option>
+            </select>
+            <select name="guild-lang" class="form-select" style="flex-grow: 4">
+              <option selected disabled>Language</option>
+            </select>
+          </div>
         </div>
-      </form>
-      <div class="result mt-4">
-        <h3 class="text-center" id="loading-text">Loading Challenges...</h3>
-        <table id="eric-results" class="table table-dark"></table>
       </div>
-    </main>
-    <script
-      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
-    <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
-    <script>
-      const query = JSON.parse(`<%- JSON.stringify(query) %>`);
-      const config = JSON.parse(`<%- JSON.stringify(config) %>`);
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="/static/js/datatable.js"></script>
-    <script src="/static/js/form.js"></script>
-  </body>
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-success mt-3">
+          <%= selectedLangPack?.text?.search || `search` %>
+        </button>
+      </div>
+    </form>
+    <div class="result mt-4">
+      <h3 class="text-center" id="loading-text">Loading Challenges...</h3>
+      <table id="eric-results" class="table table-dark"></table>
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+  <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
+  <script>
+    const query = JSON.parse(`<%- JSON.stringify(query) %>`);
+    const config = JSON.parse(`<%- JSON.stringify(config) %>`);
+    const selectedLangPack = JSON.parse(`<%- JSON.stringify(selectedLangPack) %>`);
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="/static/js/datatable.js"></script>
+  <script src="/static/js/form.js"></script>
+</body>
+
 </html>

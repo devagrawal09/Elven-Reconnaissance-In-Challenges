@@ -1,6 +1,7 @@
 import { NextFunction, Router, Request, Response } from 'express';
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
+import axios from 'axios';
 import { IChallengeDto } from '../data/dummy';
 import { GroupId, GroupModel } from '@/models/group.model';
 import { ChallengeId, ChallengeModel } from '@/models/challenge.model';
@@ -8,7 +9,9 @@ import { GroupLangModel } from '@/models/group-lang.model';
 import { sequelize } from '@/databases';
 import { SearchConfig, SearchParams } from '@/dtos';
 import { SearchParamsToSequelizeQuery } from '@/search';
-import axios from 'axios';
+import * as langs from '@/languages';
+
+type Lang = keyof typeof langs;
 
 export const router = Router();
 
@@ -26,7 +29,17 @@ router.get(`/`, async (req: Request, res: Response, next: NextFunction) => {
       throw new Error('Validation error');
     }
 
-    res.render('index', { title: 'Express', query, config: SearchConfig });
+    const selectedLang = (req.query.lang as Lang) || 'en';
+
+    res.render('index', {
+      title: 'Express',
+      query,
+      config: SearchConfig,
+
+      langs: Object.keys(langs),
+
+      selectedLangPack: langs[selectedLang],
+    });
   } catch (error) {
     next(error);
   }
