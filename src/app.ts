@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import hpp from 'hpp';
+import morgan from 'morgan';
 import { NODE_ENV, PORT, ORIGIN, CREDENTIALS } from '@config';
 import { sequelize } from '@databases';
 
@@ -42,6 +43,7 @@ class App {
   }
 
   private initializeMiddlewares() {
+    this.app.use(morgan('dev'));
     this.app.use(cors({ origin: ORIGIN, credentials: CREDENTIALS }));
     this.app.use(hpp());
     this.app.use(compression());
