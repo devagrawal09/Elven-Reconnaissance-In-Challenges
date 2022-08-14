@@ -1,43 +1,36 @@
-import { NextFunction, Router, Request, Response } from 'express';
+import { Router } from 'express';
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import axios from 'axios';
-import { IChallengeDto } from '../data/dummy';
 import { GroupId, GroupModel } from '@/models/group.model';
 import { ChallengeId, ChallengeModel } from '@/models/challenge.model';
 import { GroupLangModel } from '@/models/group-lang.model';
 import { sequelize } from '@/databases';
-import { SearchConfig, SearchParams } from '@/dtos';
+import { IChallengeDto, SearchConfig, SearchParams } from '@/dtos';
 import { SearchParamsToSequelizeQuery } from '@/search';
 import * as langs from '@/languages';
+import { LogModel } from '@/models/log.model';
 
 type Lang = keyof typeof langs;
 
 export const router = Router();
 
-router.get(`/`, async (req: Request, res: Response, next: NextFunction) => {
+router.get(`/`, async (req, res, next) => {
   try {
     const query = plainToClass(SearchParams, req.query);
-    const validationErrors = await validate(query);
-
-    if (validationErrors.length > 0) {
-      validationErrors.forEach(
-        error =>
-          error.constraints &&
-          Object.values(error.constraints).forEach(e => console.error(`\t${e}`)),
-      );
-      throw new Error('Validation error');
-    }
 
     const selectedLang = (req.query.lang as Lang) || 'en';
+
+    const log = await LogModel.findOne();
+    const lastUpdated = log?.get().lastUpdated;
 
     res.render('index', {
       title: 'Express',
       query,
+      lastUpdated,
       config: SearchConfig,
 
       langs: Object.keys(langs),
-
       selectedLangPack: langs[selectedLang],
     });
   } catch (error) {
@@ -45,9 +38,9 @@ router.get(`/`, async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-router.get(`/data`, async (req: Request, res: Response, next: NextFunction) => {
+router.post(`/data`, async (req, res, next) => {
   try {
-    const query = plainToClass(SearchParams, req.query);
+    const query = plainToClass(SearchParams, { ...req.query, ...req.body });
     const validationErrors = await validate(query);
 
     if (validationErrors.length > 0) {
@@ -59,28 +52,41 @@ router.get(`/data`, async (req: Request, res: Response, next: NextFunction) => {
       throw new Error('Validation error');
     }
 
-    const cs = await ChallengeModel.findAll({
-      include: [
-        {
-          association: 'group',
-          include: [`langs`],
-        },
-      ],
-      where: SearchParamsToSequelizeQuery(query),
-      subQuery: false,
-      limit: 200,
-    });
+    const [{ rows: cs, count: recordsFiltered }, recordsTotal] = await Promise.all([
+      ChallengeModel.findAndCountAll({
+        include: [
+          {
+            association: 'group',
+            include: [`langs`],
+          },
+        ],
+        where: SearchParamsToSequelizeQuery(query),
+        subQuery: false,
+        limit: query.length,
+        offset: query.start,
+        order: query.order.map(([key, order]) => {
+          if (key === `group.name`) {
+            return [`group`, `name`, order];
+          }
+          if (key === `group.langs`) {
+            return [`group`, `langs`, `lang`, order];
+          }
+          return [key, order];
+        }),
+      }),
+      ChallengeModel.count({}),
+    ]);
 
-    const challenges = cs.map(c => c.get());
+    const data = cs.map(c => c.get());
 
-    res.json(challenges);
+    res.json({ draw: query.draw, data: data, recordsFiltered, recordsTotal });
   } catch (error) {
     console.error(error);
     next(error);
   }
 });
 
-router.get(`/sync`, async (req: Request, res: Response, next) => {
+router.get(`/sync`, async (req, res, next) => {
   try {
     const guilds = new Map<string, GroupModel>();
     const challenges: ChallengeModel[] = [];
@@ -96,10 +102,11 @@ router.get(`/sync`, async (req: Request, res: Response, next) => {
     console.log(`fetched ${newChallenges.length} challenges from oldgods`);
 
     newChallenges.forEach(({ group, ...c }) => {
+      const groupId = group.id as GroupId;
       let guild = guilds.get(group.id);
       if (!guild) {
         guild = GroupModel.build({
-          id: group.id as GroupId,
+          id: groupId,
           name: group.name,
           langAll: group.langAll,
           classification: group.classification,
@@ -109,19 +116,23 @@ router.get(`/sync`, async (req: Request, res: Response, next) => {
 
         const guildLangs: GroupLangModel[] = [];
 
-        if (group.lang?.length) {
-          group.lang.forEach(lang => {
-            guildLangs.push(GroupLangModel.build({ lang }));
-          });
-        }
+        if (!group.langAll) {
+          if (group.langPrimary?.length) {
+            group.langPrimary.forEach(lang => {
+              guildLangs.push(GroupLangModel.build({ lang, groupId, primary: true }));
+            });
+          }
 
-        if (group.langPrimary?.length) {
-          group.langPrimary.forEach(lang => {
-            guildLangs.push(GroupLangModel.build({ lang, primary: true }));
-          });
-        }
+          if (group.lang?.length) {
+            group.lang.forEach(lang => {
+              if (!group.langPrimary?.includes(lang)) {
+                guildLangs.push(GroupLangModel.build({ lang, groupId, primary: false }));
+              }
+            });
+          }
 
-        guild.setDataValue('langs', guildLangs);
+          guild.setDataValue('langs', guildLangs);
+        }
 
         guilds.set(group.id, guild);
       }
@@ -153,18 +164,41 @@ router.get(`/sync`, async (req: Request, res: Response, next) => {
         [...guilds].map(async ([, guild], i) => {
           await guild.save({ transaction });
           console.log(`Saved Group ${i + 1}/${guilds.size}`);
+
+          const langs = guild.getDataValue('langs');
+
+          await Promise.all(
+            langs?.map(async (lang, j) => {
+              await lang.save({ transaction });
+
+              console.log(
+                `Saved Group Lang ${j + 1}/${langs.length} for Group ${i + 1}/${guilds.size}`,
+              );
+            }) ?? [],
+          );
         }),
       );
       console.log(`Recreating all groups... done`);
 
       console.log(`Recreating all challenges...`);
       await Promise.all(
-        challenges.map(async (challenge, i) => {
+        challenges.map(async (challenge, t) => {
           await challenge.save({ transaction });
-          console.log(`Saved Challenge ${i + 1}/${challenges.length}`);
+          console.log(`Saved Challenge ${t + 1}/${challenges.length}`);
         }),
       );
       console.log(`Recreating all challenges... done`);
+
+      console.log(`Setting last updated`);
+      let log = await LogModel.findOne();
+
+      if (!log) {
+        log = LogModel.build({ lastUpdated: new Date() });
+      }
+
+      log?.setDataValue(`lastUpdated`, new Date(ericData.lastupdated));
+      await log?.save({ transaction });
+      console.log(`Setting last updated... done`);
     });
 
     const { rows, count } = await ChallengeModel.findAndCountAll({

@@ -49,4 +49,15 @@ export class SearchParams {
   @IsEnum(Langs)
   @ValidateIf(params => !!params['guild-lang'])
   'guild-lang'?: typeof Langs[number];
+
+  @Type(() => Number)
+  draw!: number;
+
+  @Type(() => Number)
+  start!: number;
+
+  @Type(() => Number)
+  length!: number;
+
+  order!: [string, 'asc' | 'desc'][];
 }
