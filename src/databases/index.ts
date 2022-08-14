@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { NODE_ENV, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE } from '@config';
+import { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE } from '@config';
 
 if (!DB_DATABASE || !DB_PORT || !DB_HOST || !DB_USER || !DB_PASSWORD) {
   throw new Error('Database configuration is missing');
@@ -15,11 +15,7 @@ export const sequelize = new Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
     underscored: true,
     freezeTableName: true,
   },
-  pool: {
-    min: 0,
-    max: 5,
-  },
-  logging: NODE_ENV === 'development',
+  logging: false,
   benchmark: true,
 });
 
