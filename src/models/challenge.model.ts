@@ -8,7 +8,7 @@ export interface IChallenge {
   id: ChallengeId;
   name: string;
   summary: string;
-  description: string;
+  description?: string;
   prize: number;
   official: boolean;
   memberCount: number;
@@ -44,7 +44,6 @@ ChallengeModel.init(
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: false,
     },
     prize: {
       type: DataTypes.INTEGER,

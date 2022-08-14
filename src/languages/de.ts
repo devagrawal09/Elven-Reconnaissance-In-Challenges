@@ -42,6 +42,7 @@ const langs = {
 const text = {
   change_language: 'Sprache ändern',
   search_params: 'Suchparameter',
+  clear_search: 'Suchparameter löschen',
   advanced_search: 'Erweiterte Suche',
   title: 'Titel',
   title_and_summary: 'Titel und Zusammenfassung',
@@ -52,6 +53,7 @@ const text = {
   name: 'Name',
   summary: 'Zusammenfassung',
   gem_prize: 'Gewinn',
+  member_count: 'Mitgliederanzahl',
   created: 'Erstellt',
   last_updated: 'Zuletzt aktualisiert',
   habitica_official_challenge: 'Habitica-Offizielles Challenge',

@@ -254,6 +254,7 @@ const langs = {
 const text = {
   change_language: 'Change Language',
   search_params: 'Search Parameters',
+  clear_search: 'Clear Search',
   advanced_search: 'Advanced Search',
   title: 'Title',
   title_and_summary: 'Title and Summary',
@@ -264,10 +265,12 @@ const text = {
   name: 'Name',
   summary: 'Summary',
   gem_prize: 'Gem Prize',
+  member_count: 'Member Count',
   created: 'Created',
   last_updated: 'Last Updated',
   habitica_official_challenge: 'Habitica Official Challenge',
   group: 'Group',
+  group_langs: 'Group Languages',
 };
 
 export const en = { classification, langs, text };

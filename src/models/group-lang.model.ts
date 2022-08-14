@@ -9,7 +9,7 @@ export interface IGroupLang {
   primary: boolean;
 }
 
-export class GroupLangModel extends Model<IGroupLang, { lang: string; primary?: boolean }> {}
+export class GroupLangModel extends Model<IGroupLang, Omit<IGroupLang, 'id'>> {}
 
 GroupLangModel.init(
   {
