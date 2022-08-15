@@ -8,4 +8,24 @@
     "Middlewares"
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#b2aaa2",
+    "activityBar.activeBorder": "#e7f7ef",
+    "activityBar.background": "#b2aaa2",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#e7f7ef",
+    "activityBarBadge.foreground": "#15202b",
+    "sash.hoverBorder": "#b2aaa2",
+    "statusBar.background": "#9b9186",
+    "statusBar.foreground": "#15202b",
+    "statusBarItem.hoverBackground": "#82786c",
+    "statusBarItem.remoteBackground": "#9b9186",
+    "statusBarItem.remoteForeground": "#15202b",
+    "titleBar.activeBackground": "#9b9186",
+    "titleBar.activeForeground": "#15202b",
+    "titleBar.inactiveBackground": "#9b918699",
+    "titleBar.inactiveForeground": "#15202b99"
+  },
+  "peacock.remoteColor": "#9b9186",
 }
