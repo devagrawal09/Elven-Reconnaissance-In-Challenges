@@ -10,6 +10,7 @@ import { IChallengeDto, SearchConfig, SearchParams } from '@/dtos';
 import { SearchParamsToSequelizeQuery } from '@/search';
 import * as langs from '@/languages';
 import { LogModel } from '@/models/log.model';
+import pkg from '../../package.json';
 
 type Lang = keyof typeof langs;
 
@@ -32,6 +33,8 @@ router.get(`/`, async (req, res, next) => {
 
       langs: Object.keys(langs),
       selectedLangPack: langs[selectedLang],
+
+      version: pkg.version,
     });
   } catch (error) {
     next(error);
