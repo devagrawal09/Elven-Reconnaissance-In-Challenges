@@ -17,11 +17,10 @@
       ajax: ({ columns, ...data }, cb) => {
         const order = data.order.map(({ column, dir }) => [columns[column].data, dir]);
 
-        ax.post(
-          '/data' +
-            window.location.search +
-            `&` +
-            new URLSearchParams({ options: JSON.stringify({ ...data, order }) }),
+        ax.get(
+          `/data${window.location.search}&${new URLSearchParams({
+            options: JSON.stringify({ ...data, order }),
+          })}`,
         )
           .then(res => cb(res.data))
           .catch(err => console.error(err));

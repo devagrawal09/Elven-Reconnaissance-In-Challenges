@@ -38,7 +38,7 @@ router.get(`/`, async (req, res, next) => {
   }
 });
 
-router.post(`/data`, async (req, res, next) => {
+router.get(`/data`, async (req, res, next) => {
   try {
     const options = JSON.parse(req.query.options as string);
     const query = plainToClass(SearchParams, { ...req.query, ...options });
