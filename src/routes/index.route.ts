@@ -40,7 +40,8 @@ router.get(`/`, async (req, res, next) => {
 
 router.post(`/data`, async (req, res, next) => {
   try {
-    const query = plainToClass(SearchParams, { ...req.query, ...req.body });
+    const options = JSON.parse(req.query.options as string);
+    const query = plainToClass(SearchParams, { ...req.query, ...options });
     const validationErrors = await validate(query);
 
     if (validationErrors.length > 0) {
@@ -52,16 +53,12 @@ router.post(`/data`, async (req, res, next) => {
       throw new Error('Validation error');
     }
 
-    const [{ rows: cs, count: recordsFiltered }, recordsTotal] = await Promise.all([
-      ChallengeModel.findAndCountAll({
-        include: [
-          {
-            association: 'group',
-            include: [`langs`],
-          },
-        ],
-        where: SearchParamsToSequelizeQuery(query),
-        subQuery: false,
+    const where = SearchParamsToSequelizeQuery(query);
+
+    const [cs, recordsFiltered, recordsTotal] = await Promise.all([
+      ChallengeModel.findAll({
+        where,
+        include: [{ association: 'group', include: [`langs`] }],
         limit: query.length,
         offset: query.start,
         order: query.order.map(([key, order]) => {
@@ -74,12 +71,13 @@ router.post(`/data`, async (req, res, next) => {
           return [key, order];
         }),
       }),
+      ChallengeModel.count({ where }),
       ChallengeModel.count({}),
     ]);
 
     const data = cs.map(c => c.get());
 
-    res.json({ draw: query.draw, data: data, recordsFiltered, recordsTotal });
+    res.json({ draw: query.draw, data, recordsFiltered, recordsTotal });
   } catch (error) {
     console.error(error);
     next(error);

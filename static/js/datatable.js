@@ -14,18 +14,17 @@
 
     table.DataTable({
       serverSide: true,
-      ajax: (data, cb) => {
-        const order = data.order.map(({ column, dir }) => [data.columns[column].data, dir]);
-        console.log(data, order);
+      ajax: ({ columns, ...data }, cb) => {
+        const order = data.order.map(({ column, dir }) => [columns[column].data, dir]);
 
-        ax.post('/data' + window.location.search, { ...data, order })
-          .then(res => {
-            console.log(res.data);
-            cb(res.data);
-          })
-          .catch(err => {
-            console.error(err);
-          });
+        ax.post(
+          '/data' +
+            window.location.search +
+            `&` +
+            new URLSearchParams({ options: JSON.stringify({ ...data, order }) }),
+        )
+          .then(res => cb(res.data))
+          .catch(err => console.error(err));
       },
       searching: false,
       columns: [
@@ -84,6 +83,9 @@
           data: 'group.name',
           title: ericLangPack.text.group,
           render: (groupName, type, challenge) => {
+            if (!groupName) {
+              return 'None';
+            }
             if (type === 'display') {
               return `<a class="link-light" href="https://habitica.com/groups/guild/${challenge.group.id}" target="_blank">${groupName}</a>`;
             }

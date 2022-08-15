@@ -16,7 +16,7 @@
 <body class="bg-dark text-light">
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">ERIC</a>
+      <a class="navbar-brand" href="#">ERIC v0.1.0</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#eric-navbar"
         aria-controls="eric-navbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -27,7 +27,7 @@
             <a class="nav-link active" aria-current="page" href="/">Search</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">FAQ</a>
+            <a class="nav-link active" aria-current="page" href="/faq">FAQ</a>
           </li>
         </ul>
       </div>
@@ -58,9 +58,9 @@
         </div>
         <div style="text-align: right">
           <div class="btn-group">
-            <button type="reset" class="btn btn-warning mt-4" id="clear-search">
+            <a href="/" class="btn btn-warning mt-4" id="clear-search">
               <%= selectedLangPack?.text?.clear_search || `clear_search` %>
-            </button>
+            </a>
             <button type="button" class="btn btn-primary mt-4" id="advanced-search-toggle">
               <span class="on-hidden">
                 <%= selectedLangPack?.text?.advanced_search || `advanced_search` %>
