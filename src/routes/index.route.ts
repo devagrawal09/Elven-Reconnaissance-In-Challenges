@@ -2,14 +2,18 @@ import { Router } from 'express';
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import axios from 'axios';
-import { GroupId, GroupModel } from '@/models/group.model';
-import { ChallengeId, ChallengeModel } from '@/models/challenge.model';
-import { GroupLangModel } from '@/models/group-lang.model';
 import { sequelize } from '@/databases';
 import { IChallengeDto, SearchConfig, SearchParams } from '@/dtos';
 import { SearchParamsToSequelizeQuery } from '@/search';
 import * as langs from '@/languages';
-import { LogModel } from '@/models/log.model';
+import {
+  LogModel,
+  ChallengeModel,
+  GroupModel,
+  GroupId,
+  GroupLangModel,
+  ChallengeId,
+} from '@/models';
 import pkg from '../../package.json';
 
 type Lang = keyof typeof langs;
