@@ -244,6 +244,7 @@ const langs = {
   sk: 'Slovak',
   sv: 'Swedish',
   th: 'Thai',
+  tk: 'Turkmen',
   tl: 'Tagalog',
   tr: 'Turkish',
   uk: 'Ukrainian',
@@ -252,15 +253,38 @@ const langs = {
 };
 
 const text = {
+  search: 'Search',
+  faq: 'FAQ',
   change_language: 'Change Language',
+
   search_params: 'Search Parameters',
   clear_search: 'Clear Search',
   advanced_search: 'Advanced Search',
+  simple_search: 'Simple Search',
+
   title: 'Title',
   title_and_summary: 'Title and Summary',
   all_three: 'Title, Summary, and Description',
   text_search: 'Text Search',
-  search: 'Search',
+  created_after: 'Created After',
+  created_before: 'Created Before',
+  last_updated_after: 'Last Updated After',
+  last_updated_before: 'Last Updated Before',
+  min_prize: 'Minimum Prize',
+  max_prize: 'Maximum Prize',
+  min_members: 'Minimum Members',
+  max_members: 'Maximum Members',
+  no_owner: 'Challenge Owner has left Habitica',
+
+  guild_parameters: 'Guild Parameters',
+  guild_search: 'Guild Search',
+  classification: 'Classification',
+  sub_classification: 'Sub Classification',
+  select_classification_first: 'select classification first',
+  lang_preference: 'Language Preference',
+  primary: 'Primary',
+  primary_and_secondary: 'Primary and Secondary',
+  language: 'Language',
 
   name: 'Name',
   summary: 'Summary',

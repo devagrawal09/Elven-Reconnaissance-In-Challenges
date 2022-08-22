@@ -24,10 +24,14 @@
       <div class="collapse navbar-collapse" id="eric-navbar">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/">Search</a>
+            <a class="nav-link active" aria-current="page" href="/">
+              <%= selectedLangPack?.text?.search || `search` %>
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/faq">FAQ</a>
+            <a class="nav-link active" aria-current="page" href="/faq">
+              <%= selectedLangPack?.text?.faq || `faq` %>
+            </a>
           </li>
         </ul>
       </div>
@@ -66,7 +70,10 @@
                 <%= selectedLangPack?.text?.advanced_search || `advanced_search` %>
                   <i class="fas fa-caret-down"></i>
               </span>
-              <span class="on-shown hide"> Simple Search <i class="fas fa-caret-up"></i> </span>
+              <span class="on-shown hide">
+                <%= selectedLangPack?.text?.simple_search || `simple_search` %>
+                  <i class="fas fa-caret-up"></i>
+              </span>
             </button>
           </div>
         </div>
@@ -97,7 +104,9 @@
           <div class="col-md-6">
             <div class="form-group">
               <div class="input-group">
-                <span class="input-group-text">Created After</span>
+                <span class="input-group-text">
+                  <%= selectedLangPack?.text?.created_after || `created_after` %>
+                </span>
                 <input type="date" class="form-control" name="date-created-after"
                   value="<%= query['date-created-after'] %>" />
               </div>
@@ -106,7 +115,9 @@
           <div class="col-md-6">
             <div class="form-group">
               <div class="input-group">
-                <span class="input-group-text">Created Before</span>
+                <span class="input-group-text">
+                  <%= selectedLangPack?.text?.created_before || `created_before` %>
+                </span>
                 <input type="date" class="form-control" name="date-created-before"
                   value="<%= query['date-created-before'] %>" />
               </div>
@@ -117,7 +128,9 @@
           <div class="col-md-6">
             <div class="form-group">
               <div class="input-group">
-                <span class="input-group-text">Last Updated After</span>
+                <span class="input-group-text">
+                  <%= selectedLangPack?.text?.last_updated_after || `last_updated_after` %>
+                </span>
                 <input type="date" class="form-control" name="date-updated-after" />
               </div>
             </div>
@@ -125,7 +138,9 @@
           <div class="col-md-6">
             <div class="form-group">
               <div class="input-group">
-                <span class="input-group-text">Last Updated Before</span>
+                <span class="input-group-text">
+                  <%= selectedLangPack?.text?.last_updated_before || `last_updated_before` %>
+                </span>
                 <input type="date" class="form-control" name="date-updated-before" />
               </div>
             </div>
@@ -134,36 +149,44 @@
         <div class="row mt-3">
           <div class="col-md-6">
             <div class="form-group">
-              <label for="min-prize">Minimum Prize</label>
+              <label for="min-prize">
+                <%= selectedLangPack?.text?.min_prize || `min_prize` %>
+              </label>
               <strong id="min-prize-value">
                 <%= query['min-prize'] || config.prizeMin %>
               </strong>
-              <input type="range" class="form-range" name="min-prize" placeholder="Minimum Prize"
-                step="<%= config.prizeStep %>" min="<%= config.prizeMin %>"
-                max="<%= query['max-prize'] || config.prizeMax %>"
+              <input type="range" class="form-range" name="min-prize"
+                placeholder="<%= selectedLangPack?.text?.min_prize || `min_prize` %>" step="<%= config.prizeStep %>"
+                min="<%= config.prizeMin %>" max="<%= query['max-prize'] || config.prizeMax %>"
                 value="<%= query['min-prize'] || config.prizeMin %>" />
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-group">
-              <label for="max-prize">Maximum Prize</label>
+              <label for="max-prize">
+                <%= selectedLangPack?.text?.max_prize || `max_prize` %>
+              </label>
               <strong id="max-prize-value">
                 <%= query['max-prize'] || config.prizeMax %>
               </strong>
-              <input type="range" class="form-range" name="max-prize" placeholder="Maximum Prize"
-                step="<%= config.prizeStep %>" min="<%= query['min-prize'] || config.prizeMin %>"
-                max="<%= config.prizeMax %>" value="<%= query['max-prize'] || config.prizeMax %>" />
+              <input type="range" class="form-range" name="max-prize"
+                placeholder="<%= selectedLangPack?.text?.max_prize || `max_prize` %>" step="<%= config.prizeStep %>"
+                min="<%= query['min-prize'] || config.prizeMin %>" max="<%= config.prizeMax %>"
+                value="<%= query['max-prize'] || config.prizeMax %>" />
             </div>
           </div>
         </div>
         <div class="row mt-3">
           <div class="col-md-6">
             <div class="form-group">
-              <label for="min-members">Minimum Members</label>
+              <label for="min-members">
+                <%= selectedLangPack?.text?.min_members || `min_members` %>
+              </label>
               <strong id="min-members-value">
                 <%= query['min-members'] || config.memberMin %>
               </strong>
-              <input type="range" class="form-range" name="min-members" placeholder="Minimum Members"
+              <input type="range" class="form-range" name="min-members"
+                placeholder="<%= selectedLangPack?.text?.min_members || `min_members` %>"
                 step="<%= config.membersStep %>" min="<%= config.membersMin %>"
                 max="<%= query['max-members'] || config.membersMax %>"
                 value="<%= query['min-members'] || config.membersMin %>" />
@@ -171,11 +194,14 @@
           </div>
           <div class="col-md-6">
             <div class="form-group">
-              <label for="max-members">Maximum Members</label>
+              <label for="max-members">
+                <%= selectedLangPack?.text?.max_members || `max_members` %>
+              </label>
               <strong id="max-members-value">
                 <%= query['max-members'] || config.membersMax %>
               </strong>
-              <input type="range" class="form-range" name="max-members" placeholder="Maximum Members"
+              <input type="range" class="form-range" name="max-members"
+                placeholder="<%= selectedLangPack?.text?.max_members || `max_members` %>"
                 step="<%= config.membersStep %>" min="<%= query['min-members'] || config.membersMin %>"
                 max="<%= config.membersMax %>" value="<%= query['max-members'] || config.membersMax %>" />
             </div>
@@ -187,22 +213,29 @@
             checked <% } %>
               />
               <label class="form-check-label" for="no-owner">
-                Challenge Owner has left Habitica
+                <%= selectedLangPack?.text?.no_owner || `no_owner` %>
               </label>
           </div>
         </div>
-        <h4 class="mt-4">Guild Parameters</h4>
+        <h4 class="mt-4">
+          <%= selectedLangPack?.text?.guild_parameters || `guild_parameters` %>
+        </h4>
         <div class="form-group mt-3">
-          <input type="text" class="form-control" name="text-search-guild" placeholder="Guild Search"
-            style="flex-grow: 4" value="<%= query['text-search-guild'] %>" />
+          <input type="text" class="form-control" name="text-search-guild"
+            placeholder="<%= selectedLangPack?.text?.guild_search || `guild_search` %>" style="flex-grow: 4"
+            value="<%= query['text-search-guild'] %>" />
         </div>
         <div class="row mt-3">
           <div class="col-md-6">
             <div class="form-group">
               <div class="input-group">
-                <span class="input-group-text">Classification</span>
+                <span class="input-group-text">
+                  <%= selectedLangPack?.text?.classification || `classification` %>
+                </span>
                 <select name="guild-class" class="form-select">
-                  <option value="">Classification</option>
+                  <option value="">
+                    <%= selectedLangPack?.text?.classification || `classification` %>
+                  </option>
                 </select>
               </div>
             </div>
@@ -210,9 +243,14 @@
           <div class="col-md-6">
             <div class="form-group">
               <div class="input-group">
-                <span class="input-group-text">Sub Classification</span>
+                <span class="input-group-text">
+                  <%= selectedLangPack?.text?.sub_classification || `sub_classification` %>
+                </span>
                 <select name="guild-subclass" class="form-select">
-                  <option selected disabled>Sub Classification (select classification first)</option>
+                  <option selected disabled>
+                    <%= selectedLangPack?.text?.sub_classification || `sub_classification` %> (<%=
+                        selectedLangPack?.text?.select_classification_first || `select_classification_first` %>)
+                  </option>
                 </select>
               </div>
             </div>
@@ -220,13 +258,21 @@
         </div>
         <div class="form-group mt-3">
           <div class="input-group">
-            <span class="input-group-text">Language Preference</span>
+            <span class="input-group-text">
+              <%= selectedLangPack?.text?.lang_preference || `lang_preference` %>
+            </span>
             <select name="guild-lang-type" class="form-select">
-              <option value="primary">Primary</option>
-              <option value="both">Primary and Secondary</option>
+              <option value="primary">
+                <%= selectedLangPack?.text?.primary || `primary` %>
+              </option>
+              <option value="both">
+                <%= selectedLangPack?.text?.primary_and_secondary || `primary_and_secondary` %>
+              </option>
             </select>
             <select name="guild-lang" class="form-select" style="flex-grow: 4">
-              <option selected disabled>Language</option>
+              <option selected disabled>
+                <%= selectedLangPack?.text?.language || `language` %>
+              </option>
             </select>
           </div>
         </div>
@@ -240,7 +286,7 @@
     <div class="result mt-4">
       <table id="eric-results" class="table table-dark"></table>
       <p>
-        Last updated: <%= lastUpdated %>
+        <%= selectedLangPack?.text?.last_updated || `last_updated` %>: <%= lastUpdated %>
       </p>
     </div>
   </main>
